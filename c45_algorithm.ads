@@ -7,7 +7,11 @@ package C45_Algorithm is
 
    --  Strong typing for all algorithm-specific data to prevent domain mixing.
    type Class_Label is new Natural range 0 .. 10_000;
-   type Attribute_Index is new Positive;
+   
+   --  Constrain attributes to a reasonable maximum for stack safety and definite types
+   Max_Attributes : constant := 10;
+   type Attribute_Index is new Positive range 1 .. Max_Attributes;
+   
    type Attribute_Value is new Float;
 
    --  Sentinel value for representing missing data in the dataset.
@@ -23,7 +27,9 @@ package C45_Algorithm is
    end record;
 
    type Attribute_Set is array (Attribute_Index range <>) of Attribute_Definition;
-   type Value_Array is array (Attribute_Index range <>) of Attribute_Value;
+   
+   --  Constrained array size so it can be safely used inside a record
+   type Value_Array is array (Attribute_Index) of Attribute_Value;
 
    --  A single training or testing instance.
    type Instance is record
@@ -39,6 +45,9 @@ package C45_Algorithm is
 
    --  Opaque pointer for the decision tree to hide implementation details.
    type Decision_Tree is private;
+
+   --  Helper to check if a private tree pointer is unallocated or null
+   function Is_Null (Tree : Decision_Tree) return Boolean;
 
    --  ========================================================================
    --  Variant 1: Standard C4.5 Tree Construction
@@ -75,7 +84,7 @@ package C45_Algorithm is
    function Classify
      (Tree     : Decision_Tree;
       Features : Value_Array) return Class_Label
-     with Pre => Tree /= null;
+     with Pre => not Is_Null (Tree);
 
    --  ========================================================================
    --  Helper Functions (Exposed for robust unit testing)
