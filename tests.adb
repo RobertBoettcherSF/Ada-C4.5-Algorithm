@@ -160,11 +160,9 @@ begin
    Check ("10.1 Null tree doesn't crash destroy", True); -- Checked implicitly by no exception
    begin
       declare
-         pragma Warnings (Off, Result);
-         Result : Class_Label;
+         Dummy : constant Class_Label := Classify (Tree, [1 => 1.0, others => Missing_Value]);
       begin
-         Result := Classify (Tree, [1 => 1.0, others => Missing_Value]);
-         Check ("10.2 Exception should have fired", False);
+         Check ("10.2 Exception should have fired (got " & Class_Label'Image (Dummy) & ")", False);
       end;
    exception
       when others =>
