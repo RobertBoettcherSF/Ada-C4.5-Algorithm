@@ -160,6 +160,7 @@ begin
    Check ("10.1 Null tree doesn't crash destroy", True); -- Checked implicitly by no exception
    begin
       declare
+         pragma Warnings (Off, Result);
          Result : Class_Label;
       begin
          Result := Classify (Tree, [1 => 1.0, others => Missing_Value]);
