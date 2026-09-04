@@ -1,5 +1,3 @@
-with Ada.Containers;
-
 --  The C45_Algorithm package implements the core components of the C4.5
 --  decision tree classifier, including handling of discrete and continuous
 --  attributes, missing values, and tree pruning.
