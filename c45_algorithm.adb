@@ -7,6 +7,11 @@ package body C45_Algorithm is
    procedure Free_Children is new Ada.Unchecked_Deallocation (Children_Array, Children_Access);
    procedure Free_Node is new Ada.Unchecked_Deallocation (Decision_Tree_Node, Decision_Tree);
 
+   function Is_Null (Tree : Decision_Tree) return Boolean is
+   begin
+      return Tree = null;
+   end Is_Null;
+
    --  Safe Log2 to prevent domain errors
    function Log2 (X : Float) return Float is
    begin
@@ -412,14 +417,23 @@ package body C45_Algorithm is
             end if;
          else
             declare
-               Val : constant Positive := Positive (Features (Current.Attr_Index_D));
+               F_Val : constant Attribute_Value := Features (Current.Attr_Index_D);
             begin
-               if Val >= Current.Children'First and then Val <= Current.Children'Last then
-                  Current := Current.Children (Val);
-               else
-                  -- Unknown discrete value fallback
+               -- Safely verify value against Missing_Value to avoid Constraint_Error on negatives
+               if F_Val = Missing_Value then
                   return 0;
                end if;
+
+               declare
+                  Val : constant Positive := Positive (F_Val);
+               begin
+                  if Val >= Current.Children'First and then Val <= Current.Children'Last then
+                     Current := Current.Children (Val);
+                  else
+                     -- Unknown discrete value fallback
+                     return 0;
+                  end if;
+               end;
             end;
          end if;
       end loop;
