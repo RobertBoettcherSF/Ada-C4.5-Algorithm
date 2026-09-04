@@ -25,7 +25,7 @@ package body C45_Algorithm is
    --  Calculates Shannon Entropy of a given dataset
    function Calculate_Entropy (Data : Dataset) return Float is
       Counts   : array (Class_Label range 0 .. 10_000) of Natural := [others => 0];
-      Total    : Float := Float (Data'Length);
+      Total    : constant Float := Float (Data'Length);
       Prob     : Float;
       Entropy  : Float := 0.0;
    begin
@@ -425,7 +425,7 @@ package body C45_Algorithm is
                end if;
 
                declare
-                  Val : constant Positive := Positive (F_Val);
+                  Val : constant Integer := Integer (F_Val);
                begin
                   if Val >= Current.Children'First and then Val <= Current.Children'Last then
                      Current := Current.Children (Val);
